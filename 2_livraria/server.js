@@ -1,4 +1,3 @@
-import { config } from "dotenv";
 import "dotenv/config";
 import express from 'express';
 import mysql2 from "mysql2";
