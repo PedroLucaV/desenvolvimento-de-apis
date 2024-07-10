@@ -6,6 +6,18 @@ const app = express();
 //aceitar dados JSON
 app.use(express.json());
 
+//Middleware
+const logRoutes = (request, response, next) => {
+    const {url, method} = request;
+    const rota = `[${method.toUpperCase()}] ${url}`;
+
+    console.log(rota)
+    next();
+};
+
+//Adicionando o middleware em todas as rotas
+app.use(logRoutes);
+
 //Query params
 app.get("/users", (req, res) => { //trabalhando com as querys params
     // const query = req.query;
@@ -16,7 +28,7 @@ app.get("/users", (req, res) => { //trabalhando com as querys params
         "pessoa 1",
         "pessoa 2",
         "pessoa 3"
-    ])
+    ]);
 });
 
 //Body params
@@ -28,7 +40,7 @@ app.post("/users", (req, res) => {
         "pessoa 2",
         "pessoa 3",
         "pessoa 4"
-    ])
+    ]);
 });
 
 //Route params
@@ -43,7 +55,7 @@ app.put("/users/:id/:cpf", (req, res) => {
         "pessoa 10",
         "pessoa 3",
         "pessoa 4"
-    ])
+    ]);
 });
 
 app.delete("/users", (req, res) => {
@@ -51,7 +63,7 @@ app.delete("/users", (req, res) => {
         "pessoa 10",
         "pessoa 3",
         "pessoa 4"
-    ])
+    ]);
 });
 
 app.listen(PORT, () => {
