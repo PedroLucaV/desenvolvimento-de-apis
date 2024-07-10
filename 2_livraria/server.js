@@ -11,7 +11,7 @@ app.use(json());
 const conn = mysql2.createConnection({
     host:'localhost',
     user:'root',
-    password:'Sen@iDev77!.',
+    password: process.env.DB_PASSWORD,
     database:'livraria',
     port:3306
 });
