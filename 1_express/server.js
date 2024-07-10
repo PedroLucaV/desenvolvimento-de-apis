@@ -1,4 +1,5 @@
 import express, { json } from "express";
+import {v4 as uuidv4} from "uuid";
 const PORT = 3333;
 
 const app = express();
@@ -15,55 +16,65 @@ const logRoutes = (request, response, next) => {
     next();
 };
 
-//Adicionando o middleware em todas as rotas
 app.use(logRoutes);
 
-//Query params
-app.get("/users", (req, res) => { //trabalhando com as querys params
-    // const query = req.query;
-    // console.log(query)
-    const {nome, idade} = req.query; //desestruturando o objeto do query
-    console.log(nome, idade);
-    res.status(200).json([
-        "pessoa 1",
-        "pessoa 2",
-        "pessoa 3"
-    ]);
+const users = [];
+app.get("/users", (req, res) => {
+    res.status(200);
+    res.json(users);
 });
 
-//Body params
 app.post("/users", (req, res) => {
-    const {nome, idade} = req.body; //requisição do corpo desestruturada
-    console.log(nome, idade);
-    res.status(201).json([
-        "pessoa 1",
-        "pessoa 2",
-        "pessoa 3",
-        "pessoa 4"
-    ]);
+    const id = uuidv4();
+    const {nome, idade} = req.body;
+    if(!nome){
+        res.status(400);
+        res.json({message: "Está faltando o nome no campo"})
+        return;
+    } else if(!idade){
+        res.status(400);
+        res.json({message: "Está faltando a idade"})
+        return;
+    }
+    const usuario = {id, nome, idade}
+    users.push(usuario)
+    res.status(201);
+    res.json({message: "Usuario criado!", usuario});
+    res.end();
 });
 
-//Route params
-app.put("/users/:id/:cpf", (req, res) => {
-    // const id = req.params.id; //podemos pegar dessa forma
-    // const cpf = req.params.cpf //e tambem podemos pegar multiplos parametros de rota
-    //quanto podemos desestruturar
-    const {id, cpf} = req.params;
-    console.log(id, cpf) 
-    res.status(200).json([
-        "pessoa 1",
-        "pessoa 10",
-        "pessoa 3",
-        "pessoa 4"
-    ]);
+app.put("/users/:id", (req, res) => {
+    const {id} = req.params;
+    const {nome, idade} = req.body;
+    const indexUser = users.findIndex(usuario => usuario.id == id);
+    if(indexUser == -1){
+        res.status(404);
+        res.json("Usuario não encontrado");
+        return;
+    }
+    if(!nome || !idade){
+        res.status(400);
+        res.json("O corpo não pode estar vazio! Me informe o nome e a idade a ser trocada do usuario!")
+        return;
+    }
+    const updatedUser = {id, nome, idade};
+    users[indexUser] = updatedUser;
+    res.status(200);
+    res.json("Usuario atualizado!")
+    res.end();
 });
 
-app.delete("/users", (req, res) => {
-    res.status(204).json([
-        "pessoa 10",
-        "pessoa 3",
-        "pessoa 4"
-    ]);
+app.delete("/users/:id", (req, res) => {
+    const {id} = req.params;
+    const indexUser = users.findIndex(usuario => usuario.id == id);
+    if(indexUser == -1){
+        res.status(404);
+        res.json("Usuario não encontrado");
+        return;
+    }
+    users.splice(indexUser, 1);
+    res.status(204);
+    res.end();
 });
 
 app.listen(PORT, () => {
