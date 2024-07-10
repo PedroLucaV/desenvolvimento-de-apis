@@ -21,12 +21,11 @@ conn.connect((err) => {
         console.error(err.stack);
     }
     console.log("Mysql Conectado")
+    app.listen(PORT, () => {
+        console.log(`Servidor aberto na porta ${PORT}`)
+    })
 });
 
 app.get("/", (req, res) =>{
     res.send("Olá Mundo");
-})
-
-app.listen(PORT, () => {
-    console.log(`Servidor aberto na porta ${PORT}`)
 })
