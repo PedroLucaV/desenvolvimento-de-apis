@@ -26,6 +26,11 @@ conn.connect((err) => {
     })
 });
 
-app.get("/", (req, res) =>{
+app.get("/livros", (req, res) =>{
     res.send("Olá Mundo");
+})
+
+//rota 404
+app.use((req, res) => {
+    res.status(404).json("Rota não encontrada"); //executa caso a rota não exista
 })
