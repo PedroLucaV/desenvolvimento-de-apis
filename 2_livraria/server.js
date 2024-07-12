@@ -39,7 +39,38 @@ app.get("/livros", (req, res) =>{
 })
 
 app.post('/livros', (req, res) => {
-    res.send("Cadastro")
+    const {titulo, autor, ano_publicacao, genero, preco, disponibilidade} = req.body;
+    if(!titulo){
+        return res.status(400).json({message: "O titulo não pode ser vazio"});
+    }
+    if(!autor){
+        return res.status(400).json({message: "O autor não pode ser vazio"});
+    }
+    if(!ano_publicacao){
+        return res.status(400).json({message: "O ano de publicacao não pode ser vazio"});
+    }
+    if(!genero){
+        return res.status(400).json({message: "O genero não pode ser vazio"});
+    }
+    if(!preco){
+        return res.status(400).json({message: "O preco não pode ser vazio"});
+    }
+    if(!disponibilidade){
+        return res.status(400).json({message: "A disponibilidade não pode ser vazio"});
+    }
+    
+    const checkSql = `SELECT * FROM livros WHERE titulo = "${titulo}" AND autor = "${autor}" AND ano_publicacao = "${ano_publicacao}"`;
+    conn.query(checkSql, (err, data) => {
+        if(err){
+            res.status(500).json({message: "erro ao buscar os livros"})
+            return console.error(err);
+        }
+        if(data.length > 0){
+            res.status(409).json({message: "Livro já existe na base de dados"});
+            return;
+        }
+    })
+
 })
 
 //rota 404
