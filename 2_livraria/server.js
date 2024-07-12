@@ -18,7 +18,7 @@ const conn = mysql2.createConnection({
 
 conn.connect((err) => {
     if(err){
-        console.error(err.stack);
+        return console.error(err.stack);
     }
     console.log("Mysql Conectado")
     app.listen(PORT, () => {
@@ -27,7 +27,19 @@ conn.connect((err) => {
 });
 
 app.get("/livros", (req, res) =>{
-    res.send("Olá Mundo");
+    const sql = 'SELECT * FROM livros';
+    conn.query(sql, (err, data) => {
+        if(err){
+            res.status(500).json({message: "erro ao buscar os livros"})
+            return console.error(err);
+        }
+        const livros = data;
+        res.status(200).json(livros);
+    })
+})
+
+app.post('/livros', (req, res) => {
+    res.send("Cadastro")
 })
 
 //rota 404
