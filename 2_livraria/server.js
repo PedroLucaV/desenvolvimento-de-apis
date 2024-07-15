@@ -27,7 +27,8 @@ conn.connect((err) => {
 });
 
 app.get("/livros", (req, res) =>{
-    const sql = 'SELECT * FROM livros';
+    const sql = /*sql*/ `SELECT * FROM livros`;
+
     conn.query(sql, (err, data) => {
         if(err){
             res.status(500).json({message: "erro ao buscar os livros"})
@@ -59,7 +60,12 @@ app.post('/livros', (req, res) => {
         return res.status(400).json({message: "A disponibilidade não pode ser vazio"});
     }
     
-    const checkSql = `SELECT * FROM livros WHERE titulo = "${titulo}" AND autor = "${autor}" AND ano_publicacao = "${ano_publicacao}"`;
+    const checkSql = /*sql*/ `
+    SELECT * FROM livros 
+    WHERE titulo = "${titulo}" 
+    AND autor = "${autor}" 
+    AND ano_publicacao = "${ano_publicacao}"`;
+    
     conn.query(checkSql, (err, data) => {
         if(err){
             res.status(500).json({message: "erro ao buscar os livros"})
@@ -69,8 +75,19 @@ app.post('/livros', (req, res) => {
             res.status(409).json({message: "Livro já existe na base de dados"});
             return;
         }
-    })
 
+        const id = uuidv4();
+        const insertSQL = /*sql*/ `
+        INSERT INTO livros(id, titulo, autor, ano_publicacao, genero, preco, disponibilidade)
+        VALUES("${id}", "${titulo}", "${autor}", "${ano_publicacao}", "${genero}", "${preco}", "${disponibilidade}")`;
+        conn.query(insertSQL, (err) => {
+            if(err){
+                res.status(500).json({message: "erro ao cadastrar o livro"})
+                return console.error(err);
+            }
+            res.status(201).json({message: `O livro ${titulo} foi cadastrado!`});
+        });
+    })
 })
 
 //rota 404
