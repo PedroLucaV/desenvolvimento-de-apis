@@ -206,6 +206,33 @@ app.get('/livro', (req, res) => {
     });
 })
 
+//rota funcionarios
+
+app.get('/funcionarios', (req, res) => {
+    const checkSql = /*sql*/ `
+    SELECT * FROM funcionarios
+    `;
+
+    conn.query(checkSql, (err, data) => {
+        if(err){
+            res.status(500).json({message: "Erro ao buscar os dados!"});
+            return console.error(err);
+        }
+
+        const funcionarios = data;
+        res.status(200).json(funcionarios);
+        res.end();
+    })
+}) //lista todos
+
+app.post('/funcionario') //cadastra funcionario (email unico)
+
+app.get('/funcionario/:id') //listar 1 funcionario
+
+app.put('/funcionario/:id') //atualizar 1 funcionario
+
+app.delete('/funcionario/:id') //deletar 1 funcionario
+
 //rota 404
 app.use((req, res) => {
     res.status(404).json("Rota não encontrada"); //executa caso a rota não exista
