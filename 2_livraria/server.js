@@ -56,9 +56,6 @@ app.post('/livros', (req, res) => {
     if(!preco){
         return res.status(400).json({message: "O preco não pode ser vazio"});
     }
-    if(!disponibilidade){
-        return res.status(400).json({message: "A disponibilidade não pode ser vazio"});
-    }
     
     const checkSql = /*sql*/ `
     SELECT * FROM livros 
@@ -78,7 +75,7 @@ app.post('/livros', (req, res) => {
 
         const id = uuidv4();
         const insertSQL = /*sql*/ `
-        INSERT INTO livros(id, titulo, autor, ano_publicacao, genero, preco, disponibilidade)
+        INSERT INTO livros(id, titulo, autor, ano_publicacao, genero, preco)
         VALUES("${id}", "${titulo}", "${autor}", "${ano_publicacao}", "${genero}", "${preco}")`;
         conn.query(insertSQL, (err) => {
             if(err){
@@ -196,7 +193,8 @@ app.get('/livro/:id', (req, res) => {
 })
 
 app.get('/livro', (req, res) => {
-    const nome = req.query.nome;
+    const nome = req.query.nome.replace('+', ' ');
+    // const nome = req.query.nome; //auto replace " " to %20 in web
     
     const checkSql = /*sql*/ `
     SELECT * FROM livros
