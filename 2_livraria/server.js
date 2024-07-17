@@ -121,6 +121,28 @@ app.delete("/livro/:id", (req, res) => {
     });
 })
 
+app.get('/livro/:id', (req, res) => {
+    const {id} = req.params;
+    
+    const checkSql = /*sql*/ `
+    SELECT * FROM livros
+    WHERE id = "${id}"`;
+    
+    conn.query(checkSql, (err, data) => {
+        if(err){
+            res.status(500).json({message: "erro ao buscar os livros"})
+            return console.error(err);
+        }
+        const buscaLivro = data.some(livro => livro.id == id);
+        if(buscaLivro == false){
+            res.status(409).json({message: "Este livro não foi encontrado na base de dados!"});
+            return;
+        }
+        const livro = data;
+        res.status(200).json(livro);
+    });
+})
+
 //rota 404
 app.use((req, res) => {
     res.status(404).json("Rota não encontrada"); //executa caso a rota não exista
