@@ -225,7 +225,53 @@ app.get('/funcionarios', (req, res) => {
     })
 }) //lista todos
 
-app.post('/funcionario') //cadastra funcionario (email unico)
+app.post('/funcionario', (req, res) => {
+    const {nome, cargo, data_contratacao, salario, email} = req.body;
+    if(!nome){
+        return res.status(400).json({message: "O nome não pode ser vazio"});
+    }
+    if(!cargo){
+        return res.status(400).json({message: "O cargo não pode ser vazio"});
+    }
+    if(!data_contratacao){
+        return res.status(400).json({message: "A data de contratação não pode ser vazia"});
+    }
+    if(!salario){
+        return res.status(400).json({message: "O salario não pode ser vazio"});
+    }
+    if(!email){
+        return res.status(400).json({message: "O preco não pode ser vazio"});
+    }
+    
+    const checkSql = /*sql*/ `
+    SELECT * FROM funcionarios
+    WHERE email = "${email}"
+    `;
+
+    conn.query(checkSql, (err, data) => {
+        if(err){
+            res.status(500).json({message: "Erro ao buscar os dados!"});
+            return console.error(err);
+        }
+
+        if(data.length > 0){
+            return res.status(404).json({message: "2 funcionarios não podem ter o mesmo email!"});
+        }
+        const id = uuidv4();
+        const addFuncionario = /*sql*/ `
+        INSERT INTO funcionarios(id, nome, cargo, data_contratacao, salario, email)
+        VALUES("${id}", "${nome}", "${cargo}", "${data_contratacao}", "${salario}", "${email}")
+        `;
+
+        conn.query(addFuncionario, (err) => {
+            if(err){
+                res.status(500).json({message: "Erro ao cadastrar o funcionario!"});
+                return console.error(err);
+            }
+            res.status(201).json({message:`Funcionario ${nome} foi cadastrado com sucesso!`});
+        })
+    });
+}) //cadastra funcionario (email unico)
 
 app.get('/funcionario/:id') //listar 1 funcionario
 
