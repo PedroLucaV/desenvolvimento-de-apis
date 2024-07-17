@@ -250,7 +250,7 @@ app.post('/funcionario', (req, res) => {
 
     conn.query(checkSql, (err, data) => {
         if(err){
-            res.status(500).json({message: "Erro ao buscar os dados!"});
+            res.status(500).json({message: "Erro ao cadastrar o funcionario!"});
             return console.error(err);
         }
 
@@ -291,13 +291,81 @@ app.get('/funcionario/:id', (req, res) => {
             return res.status(404).json({message: "Não foi encontrado nenhum funcionario com este ID!"});
         }
 
-        const funcionarioo = data;
-        res.status(200).json(funcionarioo);
+        const funcionario = data;
+        res.status(200).json(funcionario);
         res.end();
     })
 }) //listar 1 funcionario
 
-app.put('/funcionario/:id') //atualizar 1 funcionario
+app.put('/funcionario/:id', (req, res) => {
+    const {id} = req.params;
+    const {nome, cargo, data_contratacao, salario, email} = req.body;
+    if(!nome){
+        return res.status(400).json({message: "O nome não pode ser vazio"});
+    }
+    if(!cargo){
+        return res.status(400).json({message: "O cargo não pode ser vazio"});
+    }
+    if(!data_contratacao){
+        return res.status(400).json({message: "A data de contratação não pode ser vazia"});
+    }
+    if(!salario){
+        return res.status(400).json({message: "O salario não pode ser vazio"});
+    }
+    if(!email){
+        return res.status(400).json({message: "O preco não pode ser vazio"});
+    }
+
+    const checkSql = /*sql*/ `
+    SELECT * FROM funcionarios
+    WHERE id = "${id}"
+    `;
+
+    conn.query(checkSql, (err, data) => {
+        if(err){
+            res.status(500).json({message: "Erro ao buscar os dados!"});
+            return console.error(err);
+        }
+
+        if(data.length == 0){
+            return res.status(404).json({message: "Não foi encontrado nenhum funcionario com este ID!"});
+        }
+
+        const checkEmail = /*sql*/ `
+        SELECT * FROM funcionarios
+        `;
+
+        conn.query(checkEmail, (err, data) => {
+            if(err){
+                res.status(500).json({message: "Erro ao buscar os dados!"});
+                return console.error(err);
+            }
+
+            const index = data.findIndex(funcionario => funcionario.id == id)
+            data.splice(index, 1)
+
+            if(data.filter(funcionario => funcionario.email == email).length > 0){
+                return res.status(403).json({message: "Já existe um usuario com este email!"})
+            }
+
+            const updateSQL = /*sql*/ `
+            UPDATE funcionarios
+            SET nome = "${nome}", cargo = "${cargo}", data_contratacao = "${data_contratacao}", salario = "${salario}", email = "${email}"
+            WHERE id = "${id}"
+            `;
+
+            conn.query(updateSQL, (err) => {
+                if(err){
+                    res.status(500).json({message: "erro ao atualizar o funcionario"})
+                    return console.error(err);
+                }
+                res.status(200).json({message: `O funcionario ${nome} foi atualizado com sucesso!`});
+                res.end()
+            })
+        })
+        
+    })
+}) //atualizar 1 funcionario
 
 app.delete('/funcionario/:id') //deletar 1 funcionario
 
