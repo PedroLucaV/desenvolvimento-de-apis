@@ -273,7 +273,29 @@ app.post('/funcionario', (req, res) => {
     });
 }) //cadastra funcionario (email unico)
 
-app.get('/funcionario/:id') //listar 1 funcionario
+app.get('/funcionario/:id', (req, res) => {
+    const {id} = req.params;
+
+    const checkSql = /*sql*/ `
+    SELECT * FROM funcionarios
+    WHERE id = "${id}"
+    `;
+
+    conn.query(checkSql, (err, data) => {
+        if(err){
+            res.status(500).json({message: "Erro ao buscar os dados!"});
+            return console.error(err);
+        }
+
+        if(data.length == 0){
+            return res.status(404).json({message: "Não foi encontrado nenhum funcionario com este ID!"});
+        }
+
+        const funcionarioo = data;
+        res.status(200).json(funcionarioo);
+        res.end();
+    })
+}) //listar 1 funcionario
 
 app.put('/funcionario/:id') //atualizar 1 funcionario
 
