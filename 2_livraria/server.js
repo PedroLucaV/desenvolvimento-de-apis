@@ -392,3 +392,13 @@ app.delete('/funcionario/:id', (req, res) => {
 app.use((req, res) => {
     res.status(404).json("Rota não encontrada"); //executa caso a rota não exista
 })
+
+process.on("SIGINT", () => {
+    conn.end((err) => {
+        if(err){
+            return console.error({message: "erro ao fechar a conexão", error: err.message})
+        }
+        console.log("Conexão com o Mysql foi encerrada!")
+        process.exit();
+    })
+})
