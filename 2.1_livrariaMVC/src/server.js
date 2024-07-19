@@ -5,6 +5,8 @@ const PORT = process.env.PORT;
 
 import conn from './config/dbconfig.js';
 
+import "./models/livroModel.js";
+
 const app = express();
 
 app.listen(PORT, () => {
