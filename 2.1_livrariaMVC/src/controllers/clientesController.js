@@ -129,24 +129,3 @@ export const editarCliente = (req, res) => {
         
     })
 }
-
-export const deletarCliente = (req, res) => {
-    const {id} = req.params;
-    
-    const deleteSQL = /*sql*/ `
-    DELETE FROM clientes
-    WHERE id = "${id}"
-    `
-    conn.query(deleteSQL, (err, info) => {
-        if(err){
-            res.status(500).json({message: "erro ao deletetar o livro"})
-            return console.error(err);
-        }
-        if(info.affectedRows == 0){
-            res.status(404).json({message: "Cliente não encontrado na base de dados"})
-            return;
-        }
-        res.status(204);
-        res.end()
-    })
-}
