@@ -158,7 +158,7 @@ export const pegarLivroPorId = (req, res) => {
 }
 
 export const pegarLivroPorNome = (req, res) => {
-    const nome = req.query.nome.replace('+', ' ');
+    const nome = req.query.nome;
     // const nome = req.query.nome; //auto replace " " to %20 in web
     
     const checkSql = /*sql*/ `
@@ -166,7 +166,6 @@ export const pegarLivroPorNome = (req, res) => {
     WHERE titulo like "${nome}%"`;
     
     conn.query(checkSql, (err, data) => {
-        console.log(checkSql)
         if(err){
             res.status(500).json({message: "erro ao buscar os livros"})
             return console.error(err);

@@ -6,8 +6,8 @@ const router = Router();
 router.get('/', pegarLivros);
 router.post('/', criarLivro);
 router.put('/:id', editarLivro);
+router.get('/porNome', pegarLivroPorNome);
 router.delete('/:id', deletarLivro);
 router.get('/:id', pegarLivroPorId);
-router.get('/:nome', pegarLivroPorNome);
 
 export default router;
