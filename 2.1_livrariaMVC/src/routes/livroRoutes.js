@@ -1,8 +1,9 @@
 import { Router } from "express";
-import {pegarLivros } from "../controllers/livrosController.js";
+import { pegarLivros, criarLivro } from "../controllers/livrosController.js";
 
 const router = Router();
 
 router.get('/', pegarLivros)
+router.post('/', criarLivro)
 
 export default router;

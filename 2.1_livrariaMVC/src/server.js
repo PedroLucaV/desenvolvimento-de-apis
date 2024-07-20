@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express from 'express';
+import express, { json } from 'express';
 
 const PORT = process.env.PORT;
 
@@ -11,6 +11,9 @@ import "./models/funcionarioModel.js"
 import livroRoutes from './routes/livroRoutes.js';
 
 const app = express();
+
+app.use(express.urlencoded({extended: true}))
+app.use(express.json());
 
 app.use("/livros", livroRoutes);
 
