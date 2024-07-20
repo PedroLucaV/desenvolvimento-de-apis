@@ -7,6 +7,7 @@ import conn from './config/dbconfig.js';
 
 import "./models/livroModel.js";
 import "./models/funcionarioModel.js"
+import './models/usuariosModel.js'
 
 import livroRoutes from './routes/livroRoutes.js';
 import funcionariosRoutes from './routes/funcionariosRoutes.js';
