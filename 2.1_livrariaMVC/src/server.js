@@ -6,6 +6,7 @@ const PORT = process.env.PORT;
 import conn from './config/dbconfig.js';
 
 import "./models/livroModel.js";
+import "./models/funcionarioModel.js"
 
 const app = express();
 

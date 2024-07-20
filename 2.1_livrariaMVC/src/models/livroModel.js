@@ -17,7 +17,5 @@ conn.query(livroTable, (err, result, field) => {
     if(err){
         return console.error(err.stack);
     }
-    console.log(result)
-    console.log(field)
     console.log("Tabela livros criada com sucesso");
 });
