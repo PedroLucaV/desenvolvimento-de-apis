@@ -2,7 +2,7 @@ import conn from "../config/dbconfig.js";
 
 const funcionarioTable = /*sql*/ `
     CREATE TABLE IF NOT EXISTS funcionarios(
-	id VARCHAR(60) PRIMARY KEY NOT NULL UNIQUE,
+	funcionario_id VARCHAR(60) PRIMARY KEY NOT NULL UNIQUE,
 	nome VARCHAR (255) NOT NULL,
     cargo VARCHAR(255) NOT NULL,
     data_contratacao DATE NOT NULL,

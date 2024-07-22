@@ -35,10 +35,11 @@ export const criarCliente = (req, res) => {
     
     const checkSql = /*sql*/ `
     SELECT * FROM clientes
-    WHERE email = "${email}"
+    WHERE ?? = ?
     `;
+    const validateEmail = ["email", email]
 
-    conn.query(checkSql, (err, data) => {
+    conn.query(checkSql, validateEmail, (err, data) => {
         if(err){
             res.status(500).json({message: "Erro ao cadastrar o funcionario!"});
             return console.error(err);
@@ -49,11 +50,12 @@ export const criarCliente = (req, res) => {
         }
         const id = uuidv4();
         const addCliente = /*sql*/ `
-        INSERT INTO clientes(id, nome, senha, imagem, email)
-        VALUES("${id}", "${nome}", "${senha}", "${imagem}", "${email}")
+        INSERT INTO clientes(??, ??, ??, ??, ??)
+        VALUES(?, ?, ?, ?, ?)
         `;
+        const insertClient = ["cliente_id", "nome", "senha", "imagem", "email", id, nome, senha, imagem, email];
 
-        conn.query(addCliente, (err) => {
+        conn.query(addCliente, insertClient, (err) => {
             if(err){
                 res.status(500).json({message: "Erro ao cadastrar o cliente!"});
                 return console.error(err);
@@ -81,10 +83,11 @@ export const editarCliente = (req, res) => {
     
     const checkSql = /*sql*/ `
     SELECT * FROM clientes
-    WHERE email = "${email}"
+    WHERE ?? = ?
     `;
+    const validateEmail = ["email", email]
 
-    conn.query(checkSql, (err, data) => {
+    conn.query(checkSql, validateEmail, (err, data) => {
         if(err){
             res.status(500).json({message: "Erro ao buscar os dados!"});
             return console.error(err);
@@ -113,11 +116,13 @@ export const editarCliente = (req, res) => {
 
             const updateSQL = /*sql*/ `
             UPDATE clientes
-            SET nome = "${nome}", senha = "${senha}", imagem = "${imagem}", email = "${email}"
-            WHERE id = "${id}"
+            SET ?? = ?, ?? = ?, ?? = ?, ?? = ?
+            WHERE ?? = ?
             `;
 
-            conn.query(updateSQL, (err) => {
+            const updateData = ["nome", nome, "senha", senha, "imagem", imagem, "email", email, "cliente_id", id]
+
+            conn.query(updateSQL, updateData, (err) => {
                 if(err){
                     res.status(500).json({message: "erro ao atualizar o cliente"})
                     return console.error(err);

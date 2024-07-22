@@ -38,10 +38,11 @@ export const criarFuncionario = (req, res) => {
     
     const checkSql = /*sql*/ `
     SELECT * FROM funcionarios
-    WHERE email = "${email}"
+    WHERE ?? = ?
     `;
+    const validateEmail = ["email", email];
 
-    conn.query(checkSql, (err, data) => {
+    conn.query(checkSql, validateEmail, (err, data) => {
         if(err){
             res.status(500).json({message: "Erro ao cadastrar o funcionario!"});
             return console.error(err);
@@ -52,11 +53,12 @@ export const criarFuncionario = (req, res) => {
         }
         const id = uuidv4();
         const addFuncionario = /*sql*/ `
-        INSERT INTO funcionarios(id, nome, cargo, data_contratacao, salario, email)
-        VALUES("${id}", "${nome}", "${cargo}", "${data_contratacao}", "${salario}", "${email}")
+        INSERT INTO funcionarios(??, ??, ??, ??, ??, ??)
+        VALUES(?, ?, ?, ?, ?, ?)
         `;
+        const insertSql = ["funcionario_id", "nome", "cargo", "data_contratacao", "salario", "email",id, nome, cargo, data_contratacao, salario, email];
 
-        conn.query(addFuncionario, (err) => {
+        conn.query(addFuncionario, insertSql, (err) => {
             if(err){
                 res.status(500).json({message: "Erro ao cadastrar o funcionario!"});
                 return console.error(err);
@@ -87,10 +89,11 @@ export const editarFuncionario = (req, res) => {
 
     const checkSql = /*sql*/ `
     SELECT * FROM funcionarios
-    WHERE id = "${id}"
+    WHERE ?? = ?
     `;
+    const checkId = ["funcionario_id", id];
 
-    conn.query(checkSql, (err, data) => {
+    conn.query(checkSql,checkId, (err, data) => {
         if(err){
             res.status(500).json({message: "Erro ao buscar os dados!"});
             return console.error(err);
@@ -119,11 +122,12 @@ export const editarFuncionario = (req, res) => {
 
             const updateSQL = /*sql*/ `
             UPDATE funcionarios
-            SET nome = "${nome}", cargo = "${cargo}", data_contratacao = "${data_contratacao}", salario = "${salario}", email = "${email}"
-            WHERE id = "${id}"
+            SET ?? = ?, ?? = ?, ?? = ?, ?? = ?, ?? = ?
+            WHERE ?? = ?
             `;
+            const upQuery = ["nome", nome, "cargo", cargo, "data_contratacao", data_contratacao, "salario", salario, "email", email, "funcionario_id", id]
 
-            conn.query(updateSQL, (err) => {
+            conn.query(updateSQL, upQuery, (err) => {
                 if(err){
                     res.status(500).json({message: "erro ao atualizar o funcionario"})
                     return console.error(err);
@@ -141,9 +145,12 @@ export const deletarFuncionario = (req, res) => {
     
     const deleteSQL = /*sql*/ `
     DELETE FROM funcionarios
-    WHERE id = "${id}"
+    WHERE ?? = ?
     `
-    conn.query(deleteSQL, (err, info) => {
+
+    const deleteSQlVal = ["funcionario_id", id];
+
+    conn.query(deleteSQL, deleteSQlVal, (err, info) => {
         if(err){
             res.status(500).json({message: "erro ao deletetar o livro"})
             return console.error(err);
@@ -162,12 +169,14 @@ export const pegarFuncionarioPorId = (req, res) => {
 
     const checkSql = /*sql*/ `
     SELECT * FROM funcionarios
-    WHERE id = "${id}"
+    WHERE ?? = ?
     `;
 
+    const valiSql = ["funcionario_id", id];
+    
     conn.query(checkSql, (err, data) => {
         if(err){
-            res.status(500).json({message: "Erro ao buscar os dados!"});
+            res.status(500).json({message: `Erro ao buscar os dados!`});
             return console.error(err);
         }
 
