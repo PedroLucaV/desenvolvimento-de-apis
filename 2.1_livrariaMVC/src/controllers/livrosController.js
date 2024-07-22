@@ -50,9 +50,12 @@ export const criarLivro = (req, res) => {
 
         const id = uuidv4();
         const insertSQL = /*sql*/ `
-        INSERT INTO livros(livro_id, titulo, autor, ano_publicacao, genero, preco)
-        VALUES("${id}", "${titulo}", "${autor}", "${ano_publicacao}", "${genero}", "${preco}")`;
-        conn.query(insertSQL, (err) => {
+        INSERT INTO livros(??, ??, ??, ??, ??, ??)
+        VALUES(?, ?, ?, ?, ?, ?)`;
+
+        const dataInsert = ["livro_id", "titulo", "autor", "ano_publicacao", "genero", "preco", id, titulo, autor, ano_publicacao, genero, preco];
+
+        conn.query(insertSQL, dataInsert, (err) => {
             if(err){
                 res.status(500).json({message: "erro ao cadastrar o livro"})
                 return console.error(err);
