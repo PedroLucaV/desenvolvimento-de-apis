@@ -50,7 +50,7 @@ export const criarLivro = (req, res) => {
 
         const id = uuidv4();
         const insertSQL = /*sql*/ `
-        INSERT INTO livros(id, titulo, autor, ano_publicacao, genero, preco)
+        INSERT INTO livros(livro_id, titulo, autor, ano_publicacao, genero, preco)
         VALUES("${id}", "${titulo}", "${autor}", "${ano_publicacao}", "${genero}", "${preco}")`;
         conn.query(insertSQL, (err) => {
             if(err){
@@ -87,7 +87,7 @@ export const editarLivro = (req, res) => {
 
     const checkSql = /*sql*/ `
     SELECT * FROM livros
-    WHERE id = "${id}"`;
+    WHERE livro_id = "${id}"`;
     
     conn.query(checkSql, (err, data) => {
         if(err){
@@ -101,7 +101,7 @@ export const editarLivro = (req, res) => {
         const updateSQL = /*sql*/ `
         UPDATE livros
         SET titulo = "${titulo}", autor = "${autor}", ano_publicacao = "${ano_publicacao}", genero = "${genero}", preco = "${preco}", disponibilidade = "${disponibilidade}"
-        WHERE id = "${id}"
+        WHERE livro_id = "${id}"
         `
         conn.query(updateSQL, (err) => {
             if(err){
@@ -119,7 +119,7 @@ export const deletarLivro = (req, res) => {
     
     const deleteSQL = /*sql*/ `
     DELETE FROM livros
-    WHERE id = "${id}"
+    WHERE livro_id = "${id}"
     `
     conn.query(deleteSQL, (err, info) => {
         if(err){
@@ -140,14 +140,14 @@ export const pegarLivroPorId = (req, res) => {
     
     const checkSql = /*sql*/ `
     SELECT * FROM livros
-    WHERE id = "${id}"`;
+    WHERE livro_id = "${id}"`;
     
     conn.query(checkSql, (err, data) => {
         if(err){
             res.status(500).json({message: "erro ao buscar os livros"})
             return console.error(err);
         }
-        const buscaLivro = data.some(livro => livro.id == id);
+        const buscaLivro = data.some(livro => livro.livro_id == id);
         if(buscaLivro == false){
             res.status(409).json({message: "Este livro não foi encontrado na base de dados!"});
             return;
