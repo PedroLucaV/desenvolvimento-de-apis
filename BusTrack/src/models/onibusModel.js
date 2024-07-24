@@ -11,7 +11,7 @@ const onibusTable = /*sql*/ `
     id_motorista INT NOT NULL,
 
     FOREIGN KEY (id_linha) REFERENCES linhas(linha_id),
-    FOREIGN KEY (id_motorista) REFERENCES motorista(motorista_id)
+    FOREIGN KEY (id_motorista) REFERENCES motoristas(motorista_id)
     );`;
 
 conn.query(onibusTable, (err, result, field) => {
