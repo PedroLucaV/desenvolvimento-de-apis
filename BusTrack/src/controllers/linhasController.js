@@ -92,7 +92,7 @@ export const listarLinhaId = (req, res) => {
 }
 
 export const editarLinha = (req, res) => {
-    const {id} = req.params;
+    let {id} = req.params;
     let {nome_linha, numero_linha, itinerario} = req.body;
 
     if(!nome_linha && !numero_linha && !itinerario){
@@ -100,10 +100,11 @@ export const editarLinha = (req, res) => {
     }
 
     const checkSql = /*sql*/ `
-    SELECT * FROM linhas
-    WHERE ?? = ?
+        SELECT ??, ?? FROM linhas
+        INNER JOIN onibus ON linhas.?? = onibus.??
+        WHERE ?? = ?;
     `;
-    const checkId = ["linha_id", id];
+    const checkId = ["onibus_id", "id_linha", "linha_id", "id_linha", "onibus_id", id];
 
     conn.query(checkSql, checkId, (err, data) => {
         if(err){
@@ -115,19 +116,10 @@ export const editarLinha = (req, res) => {
             return res.status(404).json({message: "Não foi encontrado nenhum funcionario com este ID!"});
         }
 
-        if(!nome_linha){
-            nome_linha = data[0].nome_linha
-        }
-        if(!numero_linha){
-            numero_linha = data[0].numero_linha
-        }
-        if(!itinerario){
-            itinerario = data[0].itinerario
-        }
+        id = data[0].id_linha
 
         const checkData = /*sql*/ `
-            SELECT * FROM linhas
-            ;
+            SELECT * FROM linhas;
         `;
 
         const checkNum = ["numero_linha", numero_linha];
@@ -149,6 +141,16 @@ export const editarLinha = (req, res) => {
                 SET ?? = ?, ?? = ?, ?? = ?
                 WHERE ?? = ?
             `
+
+            if(!nome_linha){
+                nome_linha = data[0].nome_linha
+            }
+            if(!numero_linha){
+                numero_linha = data[0].numero_linha
+            }
+            if(!itinerario){
+                itinerario = data[0].itinerario
+            }
 
             const updateParams = ["nome_linha", nome_linha, "numero_linha", numero_linha, "itinerario", itinerario, "linha_id", id];
 

@@ -5,7 +5,7 @@ const linhasTable = /*sql*/ `
 	linha_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 	nome_linha VARCHAR (60) NOT NULL,
     numero_linha INT NOT NULL,
-    intinerario VARCHAR(255) NOT NULL
+    itinerario VARCHAR(255) NOT NULL
     );`;
 
 conn.query(linhasTable, (err, result) => {
