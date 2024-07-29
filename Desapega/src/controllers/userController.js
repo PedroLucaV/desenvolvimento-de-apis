@@ -1,8 +1,9 @@
 import conn from "../configs/dbconfig.js";
+import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
 export const registerUser = (req, res) => {
-    const {nome, email, telefone, senha, confirmSenha} = req.body;
+    const {nome, email, telefone, senha} = req.body;
     let {imagem} = req.body;
     if(!imagem){
         imagem = './images/default.png'
@@ -14,7 +15,7 @@ export const registerUser = (req, res) => {
     
     const checkVal = ["email", email];
 
-    conn.query(validateSql, checkVal, (err, data) => {
+    conn.query(validateSql, checkVal, async (err, data) => {
         if(err){
             res.status(500).json("Ocorreu um erro na criação!")
             return console.error(err);
@@ -23,13 +24,20 @@ export const registerUser = (req, res) => {
         if(data.length > 0){
             return res.status(400).json('Já existe um usuario com este email!');
         }
+        
+        //criarSenha
 
+        const salt = await bcrypt.genSalt(12)
+        console.log(salt)
+
+        const senhaHash = await bcrypt.hash(senha, salt)
+        console.log(`${senha} - ${senhaHash}`)
         const id = uuidv4();
         const createUser = /*sql*/ `
             INSERT INTO users(??, ??, ??, ??, ??, ??)
             VALUES(?, ?, ?, ?, ?, ?)
         `
-        const dataValues = ["id", "nome", "email", "telefone", "senha", "imagem", id, nome, email, telefone, senha, imagem];
+        const dataValues = ["id", "nome", "email", "telefone", "senha", "imagem", id, nome, email, telefone, senhaHash, imagem];
         conn.query(createUser, dataValues, (err) => {
             if(err){
                 res.status(500).json("Ocorreu um erro na busca!")
