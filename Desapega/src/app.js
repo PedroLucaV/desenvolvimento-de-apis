@@ -1,4 +1,4 @@
-import Express, { json } from "express";
+import Express, { json, urlencoded } from "express";
 import "dotenv/config";
 import conn from "./configs/dbconfig.js";
 
@@ -9,9 +9,10 @@ import './models/userModels.js';
 
 import userRoutes from './routes/userRoutes.js'
 
-app.use('/users', userRoutes)
+app.use(urlencoded({extended:true}))
+app.use(json());    
 
-app.use(json());
+app.use('/users', userRoutes)
 
 app.use('*', (req, res) => {
     res.status(404).json("Rota não encontrada!");
