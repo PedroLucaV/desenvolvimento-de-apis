@@ -2,28 +2,16 @@ import conn from "../configs/dbconfig.js";
 import { v4 as uuidv4 } from 'uuid';
 
 export const registerUser = (req, res) => {
-    let {nome, email, telefone, senha, imagem} = req.body;
-
-    if(!nome){
-        return res.status(400).json('O campo nome não pode ser vazio');
-    }
-    if(!email){
-        return res.status(400).json('O campo email não pode ser vazio');
-    }
-    if(!senha){
-        return res.status(400).json('O campo senha não pode ser vazio');
-    }
-    if(!telefone){
-        return res.status(400).json('O campo telefone não pode ser vazio');
-    }
+    const {nome, email, telefone, senha, confirmSenha} = req.body;
+    let {imagem} = req.body;
     if(!imagem){
-        imagem = '/image/default.png'
+        imagem = './images/default.png'
     }
-
     const validateSql = /*sql*/ `
         SELECT * FROM users
         WHERE ?? = ?
     `
+    
     const checkVal = ["email", email];
 
     conn.query(validateSql, checkVal, (err, data) => {
