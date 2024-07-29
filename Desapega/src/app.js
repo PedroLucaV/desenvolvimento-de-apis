@@ -2,9 +2,10 @@ import Express, { json } from "express";
 import "dotenv/config";
 import conn from "./configs/dbconfig.js";
 
-
 const PORT = process.env.PORT;
 const app = Express();
+
+import './models/userModels.js'
 
 app.use(json());
 
