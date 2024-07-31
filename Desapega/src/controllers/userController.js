@@ -77,4 +77,36 @@ export const loginUser = (req, res) => {
     if(!senha){
         res.status(400).json({message: "A senha é obrigatoria!"})
     }
+
+    const checkSQL = /*sql*/ `
+        SELECT * FROM users
+        WHERE ?? = ?
+    `
+    const validate = ["email", email];
+
+    conn.query(checkSQL, validate, async (err, data) => {
+        if(err){
+            console.log(err);
+            return res.status(500).json({message: "Erro ao buscar usuario"});
+        }
+
+        if(data.length == 0){
+            return res.status(404).json({message: "usuario não encontrado"});
+        }
+
+        const usuario = data[0];
+
+        const compararSenha = await bcrypt.compare(senha, usuario.senha);
+        
+        if(!compararSenha){
+            return res.status(401).json({message: "A senha não condiz com o email!"});
+        }
+
+        try{
+            await createUserToken(usuario, req, res);
+        }catch(error){
+            console.error(error)
+            res.status(500).json({error: "Erro ao processar a informação"});
+        }
+    })
 };
