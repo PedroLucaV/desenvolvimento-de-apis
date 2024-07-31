@@ -2,6 +2,8 @@ import conn from "../configs/dbconfig.js";
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import createUserToken from "../helpers/createUserJWT.js";
+import getToken from "../helpers/getToken.js";
+import jwt from 'jsonwebtoken';
 
 export const registerUser = (req, res) => {
     const {nome, email, telefone, senha} = req.body;
@@ -110,3 +112,36 @@ export const loginUser = (req, res) => {
         }
     })
 };
+
+export const checkUser = (req, res) => {
+    const {id} = req.params;
+    let usuarioAtual;
+
+    if(req.headers.authorization){
+        const token = getToken(req);
+        const decoder = jwt.decode(token, "SENHASEGURASSA");
+        
+        const usuarioId = decoder.id;
+
+        if(usuarioId != id){
+            return res.status(401).json({message: "Os dados não compreendem"});
+        }
+        const sql = /*sql*/ `
+            SELECT * FROM users 
+            WHERE ?? = ?
+        `
+        const data = ["id_usuario", usuarioId];
+        conn.query(sql, data, (err, data) => {
+            if(err){
+                console.error(err);
+                return res.status(500).json({error: "Erro ao verificar o usuario"})
+            }
+
+            usuarioAtual = data[0];
+            res.status(200).json(usuarioAtual)
+        })
+    }else{
+        usuarioAtual = null
+        return res.status(200).json(usuarioAtual);
+    }
+}
