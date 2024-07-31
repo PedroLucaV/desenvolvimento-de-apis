@@ -2,7 +2,7 @@ import conn from "../configs/dbconfig.js";
 
 const UserModel = /*sql*/ `
     CREATE TABLE IF NOT EXISTS users(
-        id VARCHAR(60) NOT NULL PRIMARY KEY,
+        id_usuario VARCHAR(60) NOT NULL PRIMARY KEY,
         nome VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         telefone VARCHAR(40) NOT NULL,
