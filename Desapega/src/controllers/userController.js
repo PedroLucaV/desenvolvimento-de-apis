@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import createUserToken from "../helpers/createUserJWT.js";
 import getToken from "../helpers/getToken.js";
 import jwt from 'jsonwebtoken';
+import getUserByToken from '../helpers/getUserByToken.js'
 
 export const registerUser = (req, res) => {
     const {nome, email, telefone, senha} = req.body;
@@ -144,4 +145,43 @@ export const checkUser = (req, res) => {
         usuarioAtual = null
         return res.status(200).json(usuarioAtual);
     }
+}
+
+export const getUserById = (req, res) => {
+    const {id} = req.params;
+
+    const checkSQL = /*sql*/ `
+        SELECT id_usuario, nome, email, telefone, imagem
+        FROM users
+        WHERE ?? = ?
+    `;
+
+    const checkData = ['id_usuario', id];
+
+    conn.query(checkSQL, checkData, (err, data) => {
+        if (err){
+            console.error(err)
+            return res.status(500).json({message: "erro ao buscar os dados"});
+        }
+
+        if(data.length == 0) {
+            res.status(404).json({message: "Usuario não encontrado"});
+        }
+
+        const usuario = data[0];
+        res.status(200).json(usuario);
+    })
+}
+
+export const editUser = async (req, res) => {
+    const {id} = req.params;
+
+    try{
+        const token = getToken(req);
+        const user = getUserByToken(token);
+    }catch(err){
+        res.status(500).json({err})
+    }
+
+    console.log(token)
 }
