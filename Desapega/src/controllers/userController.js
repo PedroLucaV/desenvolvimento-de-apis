@@ -178,10 +178,73 @@ export const editUser = async (req, res) => {
 
     try{
         const token = getToken(req);
-        const user = getUserByToken(token);
-    }catch(err){
-        res.status(500).json({err})
-    }
+        const user = await getUserByToken(token);
 
-    console.log(token)
+        const {nome, email, telefone} = req.body;
+
+        if(!nome){
+            return res.status(400).json({message: "O Nome é obrigatorio!"});
+        }
+
+        if(!telefone){
+            return res.status(400).json({message: "O Telefone é obrigatorio!"});
+        }
+
+        if(!email){
+            return res.status(400).json({message: "O Email é obrigatorio!"});
+        }
+
+        const checkSQL = /*sql*/`
+            SELECT * FROM users
+            WHERE ?? = ?
+        `
+        const checkData = ['id_usuario', id];
+
+        conn.query(checkSQL, checkData, (err, data) => {
+            if(err){
+                console.error(err)
+                return res.status(500).json({err: "Erro ao localizar o usuario!"})
+            }
+
+            if(data.length == 0) {
+                res.status(404).json({message: "usuario não encontrado"});
+            }
+    
+            const usuario = data[0];
+
+            const checkEmailSQL = /*sql*/ `
+                SELECT * FROM users
+                WHERE ?? = ? AND ?? != ?
+            `
+            const checkEmailData = ['email', email, 'id_usuario', id]
+
+            conn.query(checkEmailSQL, checkEmailData, (err, data) => {
+                if(err){
+                    console.error(err)
+                    return res.status(500).json({err: "Erro ao localizar o usuario!"})
+                }
+    
+                if(data.length > 0) {
+                    return res.status(404).json({message: "Já existe um usuario com este email!"});
+                }
+
+                const updateSQL = /*sql*/ `
+                    UPDATE users
+                    SET ? WHERE ?? = ?
+                `
+                const updateData = [{nome, email, telefone}, 'id_usuario', id];
+                conn.query(updateSQL, updateData, (err) => {
+                    if(err){
+                        console.error(err)
+                        return res.status(500).json({err: "Erro ao localizar o usuario!"})
+                    }
+
+                    res.status(200).json({message: "Usuario atualizado!"})
+                })
+            })
+        })
+
+    }catch(err){
+        res.status(500).json({err: err})
+    }
 }
