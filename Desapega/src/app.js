@@ -9,6 +9,8 @@ const PORT = process.env.PORT;
 const app = Express();
 
 import './models/userModels.js';
+import './models/objectModels.js';
+import './models/imgObjectModels.js'
 
 import userRoutes from './routes/userRoutes.js'
 
