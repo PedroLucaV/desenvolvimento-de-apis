@@ -3,6 +3,7 @@ import "dotenv/config";
 import conn from "./configs/dbconfig.js";
 import path from 'node:path';
 import { fileURLToPath } from "node:url";
+import imageUpload from "./helpers/uploadImages.js";
 
 const PORT = process.env.PORT;
 const app = Express();
@@ -17,7 +18,7 @@ const __dirName = path.dirname(__fileName);
 app.use(urlencoded({extended:true}))
 app.use(json());
 
-app.use('/public', Express.static(path.join(__dirName) + 'public'));
+app.use('/public', Express.static(path.join(__dirName, 'public')));
 
 app.use('/users', userRoutes)
 

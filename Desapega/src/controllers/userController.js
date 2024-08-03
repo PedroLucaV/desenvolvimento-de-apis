@@ -182,6 +182,11 @@ export const editUser = async (req, res) => {
 
         const {nome, email, telefone} = req.body;
 
+        let imagem = user.imagem
+        if(req.file){
+            imagem = req.file.filename
+        }
+
         if(!nome){
             return res.status(400).json({message: "O Nome é obrigatorio!"});
         }
@@ -232,7 +237,7 @@ export const editUser = async (req, res) => {
                     UPDATE users
                     SET ? WHERE ?? = ?
                 `
-                const updateData = [{nome, email, telefone}, 'id_usuario', id];
+                const updateData = [{nome, email, telefone, imagem}, 'id_usuario', id];
                 conn.query(updateSQL, updateData, (err) => {
                     if(err){
                         console.error(err)
@@ -245,6 +250,11 @@ export const editUser = async (req, res) => {
         })
 
     }catch(err){
-        res.status(500).json({err: err})
+        console.log(err)
+        res
+        .status(err.status || 500)
+        .json({
+            message: err.message || 'Erro interno do servidor'
+        })
     }
 }
