@@ -4,7 +4,8 @@ const ObjectModel = /*sql*/ `
     CREATE TABLE IF NOT EXISTS objects(
         id_object VARCHAR(60) NOT NULL PRIMARY KEY,
         titulo VARCHAR(255) NOT NULL,
-        descricao VARCHAR(2500),
+        descricao VARCHAR(2500) NOT NULL,
+        disponivel BOOLEAN NOT NULL,
         peso VARCHAR(255) NOT NULL,
         cor VARCHAR(60) NOT NULL,
         categoria VARCHAR(255) NOT NULL,

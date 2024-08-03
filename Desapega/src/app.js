@@ -13,6 +13,7 @@ import './models/objectModels.js';
 import './models/imgObjectModels.js'
 
 import userRoutes from './routes/userRoutes.js'
+import objectRoutes from './routes/objectRoutes.js'
 
 const __fileName = fileURLToPath(import.meta.url);
 const __dirName = path.dirname(__fileName);
@@ -23,6 +24,7 @@ app.use(json());
 app.use('/public', Express.static(path.join(__dirName, 'public')));
 
 app.use('/users', userRoutes)
+app.use('/objects', objectRoutes)
 
 app.use('*', (req, res) => {
     res.status(404).json("Rota não encontrada!");
